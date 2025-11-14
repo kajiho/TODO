@@ -1,51 +1,56 @@
+import { Trash } from "lucide-react";
 import React from "react";
 import { useState } from "react";
+import Form from "./components/form.jsx";
+import List from "./components/List.jsx";
 
 const App = () => {
-  const [title, setTitle] = useState("");
-  const [tasks, setTasks] = useState([]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(" ", title);
+  const [task, setTask] = useState([]);
 
-    if (title === "") return;
-    if(tasks.includes(title)) {
-      alert("Task already exists");
+  const handleSubmit = (title) => {
+    const { Id, Constant, checked } = title;
+
+    if (!title) return;
+    if (task.includes(title)) {
+
+      setTitle("");
       return;
     }
 
-    setTasks((prev) => [...prev, title]);
-    setTitle("");
-
+    setTask((prev) => [...prev, title]);
 
   };
 
+  const handleDelte = (value) => {
+    console.log(value);
+    const updateTask = task.filter((curItem) => curItem !== value);
+    setTask(updateTask);
+  };
 
-  return(
-    <div className="text-white h-screen text center bg-gray-600 justify-center">
-      <h1 className="text-5xl pt-20 text-white text-center justify-center">TODO </h1>
 
-      <form onSubmit={(e) => handleSubmit(e)} className="pt-10">
-        <div className="mt-5 flex gap-2 items-center justify-center">
-          <input
-            type="text"
-            placeholder="Enter Title"
-            onChange={(e)=> setTitle(e.target.value)}
-            className="bg-white text-black py-2 px-4 rounded-full"
-          />
-          <button className="bg-blue-500 text-white py-2 px-4 rounded-full">Submit</button>
+  const deleteAll = () => {
+    setTask([]);
+  };
+
+  return (
+    <>
+      <div className="text-white h-screen text-center bg-gray-600">
+        <h1 className="text-5xl pt-10  text-white">Todo</h1>
+
+      <Form  onAddTodo={handleSubmit} />
+
+        <div className="flex flex-col items-center mt-5 mb-5 gap-2">
+          {task.map((curItem, idx) => (
+        <List key={idx} data={curItem} onhandleDelete={handleDelte}/>
+          ))}
         </div>
-      </form>
-      <div className="justify-center item-center text-center pt-10">
-        {tasks.map((curItem, index) => (
-        <div key={index} className=" gp-2 text-black pt-5 bg-white text-center justify-center w-1/3 m-auto rounded-lg">
-          {curItem}
-          <h1/>
-        </div>
-        ))}
+        <button onClick={deleteAll} className="bg-red-400 px-5 py-2 rounded-full">
+          clear All
+        </button>
       </div>
-    </div>
+    </>
   );
 };
+
 export default App;
